@@ -1,5 +1,6 @@
 package com.example.pendaftaranapps
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -35,16 +36,34 @@ class MainActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.rcListSiswa.layoutManager = layoutManager
+        // membuat instance dari DividerItemDecoration untuk menambahkan garis pemisah antar item di RecyclerView.
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rcListSiswa.addItemDecoration(itemDecoration)
 
         findAllSiswa()
+
+        binding.fabAdd.setOnClickListener{
+            startActivity(Intent(this, AddUpdateActivity::class.java))
+        }
+
+
     }
 
+
+    // method untuk memanggil data siswa dari API
     private fun findAllSiswa() {
         showLoading(true)
 
+        // membuat permintaan jaringan menggunakan Retrofit.
+        // ApiConfig.getApiService(): Ini memanggil fungsi getApiService() dari kelas ApiConfig.
+
+        // getAllSiswa() adalah fungsi yang kita definisikan di interface ApiService untuk
+        // mengambil daftar semua siswa.
+
         val client = ApiConfig.getApiService().getAllSiswa()
+
+        // client.enqueue(): Adalah metode dari objek Call yang digunakan untuk
+        // menjalankan permintaan jaringan secara asynchronous.
         client.enqueue(object : Callback<ListSiswaResponse> {
             override fun onResponse(
                 call: Call<ListSiswaResponse>,
@@ -67,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
     }
 
     private fun setSiswaData(dataSiswa: List<DataItem>) {
